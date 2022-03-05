@@ -1,4 +1,4 @@
-import ssl
+
 from flask import session
 import requests
 import asyncio
