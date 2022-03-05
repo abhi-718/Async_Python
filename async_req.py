@@ -25,3 +25,4 @@ async def get_symbols():
 # loop.close()
 asyncio.run(get_symbols())
 print("time in seconds for {} api calls",len(results),(time.time() - start_time))
+print("my first change")
