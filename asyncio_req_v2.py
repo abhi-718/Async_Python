@@ -1,4 +1,3 @@
-
 from flask import session
 import requests
 import asyncio
@@ -12,16 +11,22 @@ results = []
 start_time = time.time()
 
 
+def get_tasks(session):
+    tasks = []
+    for symbol in symbols:
+        tasks.append(session.get(url.format(symbol,api_key),ssl=False))
+    
+    return tasks
+
 async def get_symbols():
     async with aiohttp.ClientSession() as session:    
-        for symbol in symbols:
-            print(symbol)
-            resp = await session.get(url.format(symbol,api_key),ssl=False)
-            results.append(await resp.json())
+        tasks = get_tasks(session)
+        resps = await asyncio.gather(*tasks)
+        for resp in resps:
+            results.append(await resp.json()) 
 
 
-# loop = asyncio.get_event_loop()
-# loop.run_until_complete(get_symbols())
-# loop.close()
-asyncio.run(get_symbols())
+asyncio.get_event_loop().run_until_complete(get_symbols())
+
+#asyncio.run(get_symbols())
 print("time in seconds for {} api calls",len(results),(time.time() - start_time))
